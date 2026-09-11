@@ -499,7 +499,8 @@ function drawWorld(){
     let key=null;if(scene==='tutorial')key=TUTORIAL_SLOTS[i];else{const L=stockList();if(i===0)key='vanilla';else if(L[i-1])key=L[i-1].key;}
     if(key)drawCone(x+1,y+1,ICE[key].col);});
   for(const cx of COUNTER){g.fillStyle='#8a5a2b';g.fillRect(cx*T,COUNTER_Y*T+3,T,13);g.fillStyle='#a8703a';g.fillRect(cx*T,COUNTER_Y*T+3,T,3);}
-  if(scene==='tutorial'){g.drawImage(SPR.owner,OWNER.x*T,OWNER.y*T);g.restore();return;}
+  if(scene==='tutorial')g.drawImage(SPR.owner,OWNER.x*T,OWNER.y*T);
+  else{
   g.drawImage(SPR.dryer,DRYER.x*T,DRYER.y*T);g.drawImage(SPR.bed,BED.x*T,BED.y*T);g.drawImage(SPR.vendor,VENDOR.x*T,VENDOR.y*T);
   for(const s of [VENDOR_SIGN,SIGN_FOREST,SIGN_POND,SIGN_SEA,SIGN_PIER])g.drawImage(SPR.sign,s.x*T,s.y*T);
   if(!hasSkill('hunt3'))g.drawImage(SPR.gate,GATE_MTN.x*T,GATE_MTN.y*T);if(!hasSkill('hunt5'))g.drawImage(SPR.gate,GATE_LAIR.x*T,GATE_LAIR.y*T);
@@ -513,12 +514,13 @@ function drawWorld(){
   g.drawImage(SPR.hive,HIVE.x*T,HIVE.y*T);
   for(const s of GATHER_SPOTS)if(spotVisible(s))g.drawImage(SPR[s.kind],s.x*T,s.y*T);
   if(S.dryer){g.fillStyle='#8fe3f0';g.fillRect(DRYER.x*T+3,DRYER.y*T-4,Math.round(10*(1-S.dryer.t/DRY[S.dryer.dl].time)),2);}
+  }
   // 엔티티 y정렬
   const ents=[{y:player.y,f:()=>{drawPerson('player',player.x,player.y,player.dir,player.walk);if(player.hurt>0){g.fillStyle='rgba(255,60,60,.5)';g.fillRect(player.x,player.y,T,T);}}}];
-  for(const c of customers)ents.push({y:c.y,f:()=>{drawPerson(c.spr,c.x,c.y,c.dir,c.walk);if(c.state==='out'&&c.bought)drawCone(c.x+8,c.y-6,ICE[c.bought].col);}});
+  if(scene==='main'){for(const c of customers)ents.push({y:c.y,f:()=>{drawPerson(c.spr,c.x,c.y,c.dir,c.walk);if(c.state==='out'&&c.bought)drawCone(c.x+8,c.y-6,ICE[c.bought].col);}});
   for(const m of mons){const d=MONSTERS[m.kind],sz=d.size||1;ents.push({y:m.y+(sz-1)*T,f:()=>{const sp=SPR[m.kind]||SPR.dragon;g.drawImage(sp,Math.round(m.x),Math.round(m.y),T*sz,T*sz);
     if(m.flash>0){g.fillStyle='rgba(255,255,255,.6)';g.fillRect(Math.round(m.x),Math.round(m.y),T*sz,T*sz);}
-    if(m.hp<d.hp){g.fillStyle='#222';g.fillRect(Math.round(m.x),Math.round(m.y)-4,T*sz,3);g.fillStyle='#d13b3b';g.fillRect(Math.round(m.x),Math.round(m.y)-4,Math.round(T*sz*m.hp/d.hp),3);}}});}
+    if(m.hp<d.hp){g.fillStyle='#222';g.fillRect(Math.round(m.x),Math.round(m.y)-4,T*sz,3);g.fillStyle='#d13b3b';g.fillRect(Math.round(m.x),Math.round(m.y)-4,Math.round(T*sz*m.hp/d.hp),3);}}});}}
   ents.sort((a,b)=>a.y-b.y).forEach(e=>e.f());
   g.restore();
 }
